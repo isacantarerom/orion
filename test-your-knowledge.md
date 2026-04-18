@@ -3,7 +3,7 @@
 
 ---
 
-## What do you need to run in order to test?
+### What do you need to run in order to test?
 
 ```bash
 git clone <repo>
@@ -21,7 +21,7 @@ make
 
 ---
 
-## Why did we use `struct` for `TelemetryFrame` instead of `class`?
+### Why did we use `struct` for `TelemetryFrame` instead of `class`?
 
 `struct` = plain data, `class` = behavior + encapsulation.
 
@@ -29,7 +29,7 @@ Using `struct` communicates to another engineer: *"this is just a data container
 
 ---
 
-## In `CMakeLists.txt` we wrote `-Wall -Wextra`. What does the `-W` stand for and why do we care?
+### In `CMakeLists.txt` we wrote `-Wall -Wextra`. What does the `-W` stand for and why do we care?
 
 `-Wall` and `-Wextra` are **warnings**, not errors — yet. They tell the compiler: *"show me everything suspicious."* They don't stop compilation by themselves.
 
@@ -37,7 +37,7 @@ Using `struct` communicates to another engineer: *"this is just a data container
 
 ---
 
-## What is `-Wpedantic` doing?
+### What is `-Wpedantic` doing?
 
 It means: *"enforce strict ISO C++ compliance, flag anything that's a compiler extension."*
 
@@ -45,7 +45,7 @@ If you write portable code that runs on multiple hardware targets, non-standard 
 
 ---
 
-## Why are we using `uint8_t` in the `enum class SubsystemID` in `telemetry.hpp`?
+### Why are we using `uint8_t` in the `enum class SubsystemID` in `telemetry.hpp`?
 
 `uint8_t` is 8 bits = 1 byte, which can hold values 0–255. We only have 5 subsystems (`POWER`, `THERMAL`, `ATTITUDE`, `COMMS`, `PROPULSION`) — we'll never need more than 255. Using a plain `int` would waste 4 bytes per frame for no reason.
 
@@ -53,7 +53,7 @@ Additionally, with `enum class` the compiler rejects anything that isn't a named
 
 ---
 
-## Why do we use `hardware_valid` instead of simply checking the values?
+### Why do we use `hardware_valid` instead of simply checking the values?
 
 Consider: a power sensor is physically damaged but still transmitting. It reports `0.0` volts. Is that a dead power bus or a broken sensor?
 
@@ -64,7 +64,7 @@ Treating them the same could mean ignoring a real emergency or panicking over a 
 
 ---
 
-## Why do we use `#pragma once` at the beginning of `.hpp` files?
+### Why do we use `#pragma once` at the beginning of `.hpp` files?
 
 It tells the compiler:
 
@@ -74,7 +74,7 @@ Without it, if two different files both include the same header, the compiler wo
 
 ---
 
-## We split code into `include/` (headers) and `src/` (implementations). Why does that separation matter for a HIL test system?
+### We split code into `include/` (headers) and `src/` (implementations). Why does that separation matter for a HIL test system?
 
 The header in `include/` defines the **interface** — the *what*. The `.cpp` in `src/` defines the **implementation** — the *how*.
 
@@ -91,7 +91,7 @@ The test engine never changes. You swap implementations by changing one file —
 
 ---
 
-## In `TelemetryFrame`, the timestamp is `uint64_t`. Why not `int` or `float`?
+### In `TelemetryFrame`, the timestamp is `uint64_t`. Why not `int` or `float`?
 
 **No negatives.** A timestamp in milliseconds since boot can never be negative. `uint` (unsigned) uses all 64 bits for positive numbers instead of wasting one bit on a sign — doubling the range.
 
