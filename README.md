@@ -1,4 +1,4 @@
-markdown# ORION 🛰️
+# ORION 🛰️
 ### Orbital Runtime Integration & Observation Node
 
 A Hardware-in-the-Loop (HIL) test framework written in C++, inspired by the kind of
@@ -15,13 +15,17 @@ ORION simulates a stream of satellite telemetry (power, thermal, attitude, comms
 propulsion), runs a test engine against that data, detects anomalies, logs results,
 and produces a structured report — all triggerable from a single CI-friendly script.
 
+```
 [Telemetry Simulator] → [Test Engine] → [Anomaly Detector] → [Logger] → [Python Reporter]
 ↑                                                                        ↑
 (fake hardware)                                                        (human report)
+```
 
 ---
 
 ## Project Structure
+
+```
 orion/
 ├── CMakeLists.txt          # Build system
 ├── run_tests.sh            # CI entry point — run this to do everything
@@ -39,7 +43,8 @@ orion/
 ├── tests/
 │   └── main.cpp            # Test entry point
 └── reporter/
-└── report.py           # Python analysis layer
+    └── report.py           # Python analysis layer
+```
 
 ---
 
