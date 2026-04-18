@@ -1,0 +1,24 @@
+# Build output —> contains compiled binaries, machine-specific files etc..
+build/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# macOS junk
+.DS_Store
+
+# Editor folders
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Log files
+*.log
+*.json
+logs/
