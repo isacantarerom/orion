@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-#-Wall -Wextra so we treat warnings as errors.
+#-Wall -Wextra -Wpedantic are compiler flags that enable additional warnings to help catch potential issues in the code.
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 #Which directories to look for the files
@@ -19,4 +19,5 @@ include_directories(include)
 #A CI system will run this executable to make sure our code is working as expected.
 add_executable(orion_tests
     tests/main.cpp
+    src/simulator.cpp
 )
