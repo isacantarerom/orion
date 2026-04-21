@@ -2,6 +2,7 @@
 #include "../include/telemetry.hpp"
 #include "../include/simulator.hpp"
 #include "../include/test_engine.hpp"
+#include "../include/anomaly_detector.hpp"
 
 void print_result(const TestResult& r) {
     std::string status_str;
@@ -14,8 +15,93 @@ void print_result(const TestResult& r) {
     " | " << r.message << "\n"; 
 }
 
+void print_events(const AnomalyDetector& detector) {
+    std::cout << "\n [ANOMALY EVENTS] \n]";
+
+    if(detector.events().empty()){
+        std::cout << "No state transitions ocurred. \n";
+        return;
+    }
+
+    for(const auto& event : detector.events()) {
+        std::cout << "Time: " << event.timestamp_ms << "ms | "
+        << event.reason
+        << " | Value: " << event.value
+        << "\n";
+    }
+
+}
+
+
 int main() {
 
+    std::cout << "[ORION] Anomaly Detector\n";
+    std::cout << "==================================\n\n";
+
+    TelemetrySimulator power_sim(SubsystemID::POWER, 28.3f);
+    TestEngine         engine;
+
+    // Detector: nominal range 26-30V, triggers after 3 consecutive bad frames
+    AnomalyDetector detector(26.0f, 30.0f, 3, 3);
+
+    const float MIN_VOLTS = 26.0f;
+    const float MAX_VOLTS = 30.0f;
+
+    // --- Phase 1: Normal operation ---
+    std::cout << "[PHASE 1] Normal operation (10 frames):\n";
+    for (int i = 0; i < 10; i++) {
+        auto frame = power_sim.next();
+        engine.run_suite(frame, MIN_VOLTS, MAX_VOLTS);
+        bool transitioned = detector.update(frame);
+        if (transitioned) {
+            std::cout << "  *** STATE CHANGE → " << detector.state_name() << "\n";
+        }
+    }
+    std::cout << "  Detector state: " << detector.state_name() << "\n";
+
+    // --- Phase 2: Inject sustained spike ---
+    std::cout << "\n[PHASE 2] Sustained voltage spike (42V, 6 frames):\n";
+    power_sim.inject_spike(42.0f, 6);
+    for (int i = 0; i < 8; i++) {
+        auto frame = power_sim.next();
+        engine.run_suite(frame, MIN_VOLTS, MAX_VOLTS);
+        bool transitioned = detector.update(frame);
+        if (transitioned) {
+            std::cout << "  *** STATE CHANGE → " << detector.state_name() << "\n";
+        }
+        std::cout << "  t=" << frame.timestamp_ms
+                  << "ms  value=" << frame.value
+                  << "V  state=" << detector.state_name() << "\n";
+    }
+
+    // --- Phase 3: Recovery ---
+    std::cout << "\n[PHASE 3] Recovery (10 frames of normal):\n";
+    for (int i = 0; i < 10; i++) {
+        auto frame = power_sim.next();
+        engine.run_suite(frame, MIN_VOLTS, MAX_VOLTS);
+        bool transitioned = detector.update(frame);
+        if (transitioned) {
+            std::cout << "  *** STATE CHANGE → " << detector.state_name() << "\n";
+        }
+    }
+    std::cout << "  Detector state: " << detector.state_name() << "\n";
+
+    // --- Print all state transition events ---
+    print_events(detector);
+
+    // --- Final summary ---
+    std::cout << "\n[SUMMARY]\n";
+    std::cout << "  Total tests run : " << engine.total_run()    << "\n";
+    std::cout << "  Passed          : " << engine.total_passed() << "\n";
+    std::cout << "  Failed          : " << engine.total_failed() << "\n";
+    std::cout << "  Errors          : " << engine.total_errors() << "\n";
+    std::cout << "  Anomalies found : " << detector.anomaly_count() << "\n";
+
+    return (engine.total_failed() + engine.total_errors()) > 0 ? 1 : 0;
+
+
+
+/*
     std::cout << "[ORION] - Telemetry Simulator \n";
     std::cout << "-------------------------\n\n";
 
@@ -64,7 +150,7 @@ int main() {
     //To check it on the terminal go: echo "Exist code: $?"
     // That would print 1 or 0 depending on whether we had a failure or not.
     return (engine.total_failed() + engine.total_errors()) > 0 ? 1 : 0;
-
+*/
     /*
     //Create a power subsystem simulator
     //Nominal value: 28.3 volts (typical for a satellite power bus)
