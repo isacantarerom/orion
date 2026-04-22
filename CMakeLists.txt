@@ -22,4 +22,5 @@ add_executable(orion_tests
     src/simulator.cpp
     src/test_engine.cpp
     src/anomaly_detector.cpp
+    src/logger.cpp
 )

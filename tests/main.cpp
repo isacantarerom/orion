@@ -3,6 +3,7 @@
 #include "../include/simulator.hpp"
 #include "../include/test_engine.hpp"
 #include "../include/anomaly_detector.hpp"
+#include "../include/logger.hpp"
 
 void print_result(const TestResult& r) {
     std::string status_str;
@@ -44,6 +45,8 @@ int main() {
     // Detector: nominal range 26-30V, triggers after 3 consecutive bad frames
     AnomalyDetector detector(26.0f, 30.0f, 3, 3);
 
+    Logger logger("../logs/run.json");
+
     const float MIN_VOLTS = 26.0f;
     const float MAX_VOLTS = 30.0f;
 
@@ -53,6 +56,10 @@ int main() {
         auto frame = power_sim.next();
         engine.run_suite(frame, MIN_VOLTS, MAX_VOLTS);
         bool transitioned = detector.update(frame);
+
+        auto results = engine.run_suite(frame, MIN_VOLTS, MAX_VOLTS);
+        logger.log_frame(frame, results, detector);
+
         if (transitioned) {
             std::cout << "  *** STATE CHANGE → " << detector.state_name() << "\n";
         }
@@ -88,6 +95,10 @@ int main() {
 
     // --- Print all state transition events ---
     print_events(detector);
+
+    logger.log_summary(engine, detector);
+    logger.close();
+    std::cout << "\n [LOG] Results written to logs/run.json \n";
 
     // --- Final summary ---
     std::cout << "\n[SUMMARY]\n";
