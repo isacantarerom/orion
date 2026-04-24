@@ -84,8 +84,8 @@ make
 - [x] Day 2 — Telemetry simulator (fake hardware)
 - [x] Day 3 — Test engine + assertions
 - [x] Day 4 — Anomaly detector
-- [ ] Day 5 — Logger + JSON output
-- [ ] Day 6 — Python reporter + Bash CI script
+- [x] Day 5 — Logger + JSON output
+- [x] Day 6 — Python reporter + Bash CI script
 - [ ] Day 7 — Chaos mode + interview dry run
 
 
