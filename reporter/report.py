@@ -78,7 +78,7 @@ def print_failures(frames: list):
     failures = [
         f for f in frames
         if any(r['status'] in ('FAIL', 'ERROR') for r in f['results'])
-    ]
+]
 
     print("\n[ FAILED FRAMES ]")
     if not failures:

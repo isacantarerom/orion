@@ -44,7 +44,7 @@ bool AnomalyDetector::update(const TelemetryFrame& frame) {
         case AnomalyState::ANOMALY:
             if(frame_nominal) {
                 consecutive_good_++;
-                transition(AnomalyState::RECOVERING, "Readin improving after anomaly", frame);
+                transition(AnomalyState::RECOVERING, "Readings improving after anomaly", frame);
             } else {
                 consecutive_good_ = 0; // reset good counter streak
             }
