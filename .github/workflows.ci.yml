@@ -1,0 +1,29 @@
+#.github/workflows/ci.yml
+name: ORION CI
+
+#when does this run?
+on: 
+  push: #evevrytime we push code
+    branches: [main]
+  pull_request:   #everytime we open a PR
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest #Github spins up a fresh Linux machine
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get install -y cmake g++ python3
+
+      - name: Make CI script executable
+        run: chmode +x run_tests.sh
+
+      - name: Create logs directory
+        run: mkdir -p logs
+
+      - name: Run ORION pipeline
+        run: ./run_tests.sh
