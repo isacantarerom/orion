@@ -44,11 +44,12 @@ echo ""
 echo "[2/3] Running tests..."
 cd "$SCRIPT_DIR"
 
-# We capture the exit code manually here because we want to
-# run the reporter even if tests fail — so we temporarily
-# disable set -e for this one command with || true,
-# then check the code ourselves.
-./build/orion_tests || TEST_EXIT=$?
+if [ "$1" == "--chaos" ]; then
+    echo "  ⚠️  CHAOS MODE ENABLED"
+    ORION_LOG="$SCRIPT_DIR/logs/run.json" ORION_CHAOS=1 ./build/orion_tests || TEST_EXIT=$?
+else
+    ORION_LOG="$SCRIPT_DIR/logs/run.json" ./build/orion_tests || TEST_EXIT=$?
+fi
 TEST_EXIT=${TEST_EXIT:-0}
 
 if [ $TEST_EXIT -eq 0 ]; then

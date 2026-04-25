@@ -86,7 +86,7 @@ make
 - [x] Day 4 — Anomaly detector
 - [x] Day 5 — Logger + JSON output
 - [x] Day 6 — Python reporter + Bash CI script
-- [ ] Day 7 — Chaos mode + interview dry run
+- [x] Day 7 — Chaos mode + interview dry run
 
 
 
