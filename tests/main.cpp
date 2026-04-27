@@ -172,6 +172,13 @@ int main() {
     TestEngine         engine;
     AnomalyDetector    detector(26.0f, 30.0f, 3, 3);
     const char* log_path = std::getenv("ORION_LOG");
+
+    if (!log_path) {
+        std::cerr << "[ERROR] Environment variable ORION_LOG not set. "
+                << "Did you run via run_tests.sh?\n";
+        return 1;  // exit cleanly instead of segfaulting
+    }
+    
     Logger logger(log_path ? log_path : "logs/run.json");
 
     if(chaos_mode) {

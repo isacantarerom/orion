@@ -20,6 +20,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$SCRIPT_DIR/build"
 LOG_FILE="$SCRIPT_DIR/logs/run.json"
 
+check_env() {
+    if [ -z "${!1}" ]; then
+        echo "[ERROR] Required environment variable $1 is not set."
+        exit 1
+    fi
+}
+
+check_env ORION_LOG
+
 echo "========================================"
 echo "  ORION CI Pipeline"
 echo "  $(date)"

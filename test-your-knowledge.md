@@ -132,3 +132,21 @@ journalctl -f            # follow in real time (like tail -f)
 
 
 ** "I'd reach for [journalctl] when [I have no clue where to start] because [it is the system diary, it will have everything that happened up until the crash, so then I can start there]."
+
+```
+# Show logs for the last 10 minutes
+journalctl --since "10 minutes ago"
+
+# Or if it's a specific service:
+journalctl -u orion_tests --since "10 minutes ago"
+
+# Filter only errors:
+journalctl -p err --since "10 minutes ago"
+```
+
+
+---
+
+### verify environment variable:
+> First command to run:
+$ printenv | grep ORION
